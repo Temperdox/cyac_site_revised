@@ -1,0 +1,424 @@
+.container {
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    overflow: hidden;
+}
+
+/* Horizontal scanlines */
+.scanlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 1),
+            rgba(0, 0, 0, 0.15) 1px,
+            transparent 1px,
+            transparent 2px
+    );
+    opacity: 0.7;
+    z-index: 1001;
+    pointer-events: none;
+}
+
+/* Vertical scanlines for added effect */
+.verticalLines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.05),
+            rgba(0, 0, 0, 0.05) 1px,
+            transparent 1px,
+            transparent 4px
+    );
+    opacity: 0.3;
+    z-index: 1002;
+    pointer-events: none;
+}
+
+/* CRT vignette effect - darkens corners */
+.vignette {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+            circle at center,
+            transparent 60%,
+            rgba(0, 0, 0, 0.5) 100%
+    );
+    z-index: 1003;
+    pointer-events: none;
+}
+
+/* CRT glow effect */
+.glowEffect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+            circle at center,
+            rgba(51, 255, 51, 0.05) 0%,
+            transparent 70%
+    );
+    z-index: 1004;
+    pointer-events: none;
+    animation: glowPulse 5s infinite alternate;
+}
+
+@keyframes glowPulse {
+    from {
+        opacity: 0.3;
+    }
+    to {
+        opacity: 0.6;
+    }
+}
+
+/* Random screen flicker */
+.screenFlicker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.03);
+    opacity: 0;
+    z-index: 1005;
+    pointer-events: none;
+    animation: flickerAnimation 10s infinite;
+}
+
+@keyframes flickerAnimation {
+    0% { opacity: 0; }
+    5% { opacity: 0; }
+    5.1% { opacity: 0.2; }
+    5.2% { opacity: 0; }
+    20% { opacity: 0; }
+    20.1% { opacity: 0.2; }
+    20.2% { opacity: 0; }
+    40% { opacity: 0; }
+    40.1% { opacity: 0.2; }
+    40.6% { opacity: 0; }
+    99% { opacity: 0; }
+    99.1% { opacity: 0.2; }
+    99.9% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+/* CRT paint effect */
+.paintLine::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: rgba(51, 255, 51, 0.3);
+    box-shadow: 0 0 10px rgba(51, 255, 51, 0.5);
+    pointer-events: none;
+    z-index: 1011;
+    animation: scanLine 7s linear infinite;
+}
+
+/* Random screen glitch effect */
+.glitchEffect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: 1006;
+}
+
+.glitchEffect.active {
+    opacity: 0.2;
+    animation: glitchAnimation 0.3s steps(4) forwards;
+}
+
+@keyframes glitchAnimation {
+    0% {
+        background-position: 0 0;
+        transform: translateX(-10px);
+        background-image: linear-gradient(
+                90deg,
+                rgba(51, 255, 51, 0.1) 33%,
+                rgba(0, 255, 255, 0.1) 33%,
+                rgba(0, 255, 255, 0.1) 66%,
+                rgba(51, 255, 51, 0.1) 66%
+        );
+    }
+    25% {
+        background-position: -25px 0;
+        transform: translateX(10px);
+    }
+    50% {
+        background-position: 10px 0;
+        transform: translateX(-15px);
+    }
+    75% {
+        background-position: -10px 0;
+        transform: translateX(5px);
+    }
+    100% {
+        background-position: 0 0;
+        transform: translateX(0);
+    }
+}
+
+/* Horizontal line glitch */
+.horizontalGlitch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: rgba(51, 255, 51, 0.5);
+    box-shadow: 0 0 10px rgba(51, 255, 51, 0.7);
+    z-index: 1007;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.horizontalGlitch.active {
+    opacity: 1;
+    animation: horizontalGlitchAnimation 3s infinite;
+}
+
+@keyframes horizontalGlitchAnimation {
+    0% { top: -10px; opacity: 0; }
+    10% { opacity: 1; }
+    20% { top: 20%; }
+    30% { top: 40%; }
+    40% { top: 60%; }
+    50% { top: 80%; }
+    60% { top: 40%; }
+    70% { top: 70%; }
+    80% { top: 20%; }
+    90% { opacity: 1; }
+    100% { top: 110%; opacity: 0; }
+}
+
+/* Barrel distortion effect */
+.barrelDistortion {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+            circle at center,
+            transparent 30%,
+            rgba(0, 30, 0, 0.07) 100%
+    );
+    z-index: 1008;
+    pointer-events: none;
+}
+
+/* Settings button */
+.settingsButton {
+    position: fixed;
+    bottom: 5px;
+    right: 5px;
+    background: linear-gradient(to bottom, #004400, #003300);
+    border: 1px solid var(--primary-color, #33ff33);
+    border-radius: 5px;
+    width: 120px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: var(--primary-color, #33ff33);
+    font-family: monospace;
+    font-size: 12px;
+    z-index: 1009;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.settingsButton:hover {
+    background: linear-gradient(to bottom, #006600, #004400);
+    box-shadow: 0 0 15px rgba(51, 255, 51, 0.6);
+    transform: scale(1.1);
+}
+
+/* Settings modal */
+.settingsModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1010;
+    animation: fadeIn 0.3s ease;
+    pointer-events: auto;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.settingsContent {
+    background-color: #002200;
+    border: 2px solid var(--primary-color, #33ff33);
+    box-shadow: 0 0 15px rgba(51, 255, 51, 0.6);
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 8px;
+    color: var(--primary-color, #33ff33);
+    font-family: 'Courier New', monospace;
+    position: relative;
+}
+
+.settingsContent h3 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(51, 255, 51, 0.7);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.settingsGroup {
+    margin: 20px 0;
+    border-top: 1px solid rgba(51, 255, 51, 0.3);
+    padding-top: 10px;
+}
+
+.settingItem {
+    margin-bottom: 10px;
+}
+
+.masterToggle {
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-shadow: 0 0 5px rgba(51, 255, 51, 0.7);
+    text-align: center;
+}
+
+.settingItem label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.settingItem input[type="checkbox"] {
+    margin-right: 10px;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--primary-color, #33ff33);
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.settingItem input[type="checkbox"]:checked {
+    background-color: var(--primary-color, #33ff33);
+}
+
+.settingItem input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: -1px;
+    left: 3px;
+    color: #000;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.settingItem input[type="checkbox"]:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: #227722;
+}
+
+.settingsActions {
+    text-align: center;
+    margin-top: 20px;
+    border-top: 1px solid rgba(51, 255, 51, 0.3);
+    padding-top: 15px;
+}
+
+.settingsActions button {
+    background: linear-gradient(to bottom, #004400, #003300);
+    border: 1px solid var(--primary-color, #33ff33);
+    color: var(--primary-color, #33ff33);
+    padding: 8px 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.settingsActions button:hover {
+    background: linear-gradient(to bottom, #006600, #004400);
+    box-shadow: 0 0 10px rgba(51, 255, 51, 0.5);
+}
+
+/* Scan line effect on modal */
+.settingsModal::after {
+
+}
+
+@keyframes scanLine {
+    0% { top: 0%; }
+    100% { top: 100%; }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .settingsContent {
+        max-width: 90%;
+    }
+
+    .settingsButton {
+        width: 100px;
+        font-size: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .settingsGroup {
+        margin: 10px 0;
+    }
+
+    .settingItem {
+        margin-bottom: 8px;
+        font-size: 12px;
+    }
+
+    .settingsButton {
+        width: 80px;
+        height: 18px;
+        font-size: 9px;
+    }
+}
