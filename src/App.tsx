@@ -55,7 +55,8 @@ const App: React.FC = () => {
         // Handle cd command to update current path
         if (command.startsWith('cd ')) {
             const targetPath = command.substring(3).trim();
-            // This is a simplified path resolver - in a real app this would be more sophisticated
+            // This needs to be more robust and sophisticated
+            //TODO make this more robust and sophisticated, add support for file scanning in dirs, etc
             if (targetPath === '..') {
                 // Go up one level
                 const pathParts = currentPath.split('/').filter(Boolean);

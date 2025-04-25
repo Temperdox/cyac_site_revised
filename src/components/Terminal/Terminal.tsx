@@ -458,7 +458,7 @@ const Terminal: React.FC<TerminalProps> = ({
             }
         } else {
             // For all other keys, we want normal typing behavior,
-            // but we need to stop propagation to prevent windows from receiving keyboard events
+            // but this needs to stop propagation to prevent windows from receiving keyboard events
             if (window.terminalHasFocus) {
                 e.stopPropagation();
             }
@@ -483,8 +483,7 @@ const Terminal: React.FC<TerminalProps> = ({
             ];
             completions = commands.filter(cmd => cmd.startsWith(currentWord.toLowerCase()));
         } else if (['cd', 'ls', 'cat'].includes(command)) {
-            // This would connect to your file system
-            // For now, use a hardcoded list of completions
+            // This needs to connect to the file system
             const pathOptions = [
                 'home/', 'user/', 'sites/', 'restricted/', 'sys/', 'docs/',
                 'landing', 'propaganda', 'sitedirectory', 'clock', 'timer', 'hacker', 'tetris', 'blackjack',

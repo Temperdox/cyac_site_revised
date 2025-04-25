@@ -68,7 +68,8 @@ const QuickMenu: React.FC<QuickMenuProps> = ({
 
     // Mock file system data - this would be replaced with actual data from context
     const getDirectoryContents = (path: string): FileItem[] => {
-        // This is a simplified mock - in a real app, this would get data from the file system
+        // This needs to get data from the file system
+        //TODO get data from the file system
         if (path === '/home') {
             return [
                 { name: 'documents', type: 'directory' },
@@ -210,7 +211,9 @@ const QuickMenu: React.FC<QuickMenuProps> = ({
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Simulate authentication (should be replaced with real auth)
+        // Simulate authentication for now, just to get the site running, need to factor in Discord's OAuth2 and impl
+        // JWT tokenization of user ID
+        //TODO add Discord's OAuth2 auth flow and save user ID as part of JWT Token for API calls to external sources
         if (username === 'admin' && password === 'password') {
             setIsLoggedIn(true);
             setShowLoginModal(false);
