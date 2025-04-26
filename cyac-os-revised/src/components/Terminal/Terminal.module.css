@@ -1,0 +1,383 @@
+.container {
+    width: 100%;
+    height: 250px; /* Default height, will be overridden by inline style */
+    background-color: var(--terminal-bg, #000);
+    color: var(--terminal-text, #33ff33);
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    padding: 10px;
+    padding-top: 16px; /* Extra padding at top for resize handle */
+    border-top: 2px solid var(--secondary-color, #ff3333);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+/* Resize handle */
+.resizeHandle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    background-color: var(--secondary-color, #ff3333);
+    opacity: 0.5;
+    cursor: ns-resize;
+    z-index: 10;
+}
+
+.resizeHandle:hover {
+    opacity: 0.8;
+    background-color: rgba(255, 51, 51, 0.6);
+}
+
+/* When resizing is active, prevent text selection */
+:global(body.resizing) {
+    user-select: none;
+    cursor: ns-resize !important;
+}
+
+.container.resizing {
+    transition: none;
+}
+
+/* Terminal Output */
+.outputContainer {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding-right: 5px;
+}
+
+.line {
+    padding: 1px 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    animation: textFlicker 0.01s infinite alternate;
+    width: 100%;
+    text-align: left;
+}
+
+@keyframes textFlicker {
+    from {
+        opacity: 0.97;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Color classes for the terminal */
+.red {
+    color: #ff3333;
+}
+.green {
+    color: #33ff33;
+}
+.blue {
+    color: #3399ff;
+}
+.yellow {
+    color: #ffff33;
+}
+.cyan {
+    color: #33ffff;
+}
+.white {
+    color: #ffffff;
+}
+.restrictedItem {
+    color: #ff3333;
+    font-weight: bold;
+}
+
+/* Specific clickable items */
+.directoryItem {
+    color: #77aaff;
+    font-weight: bold;
+}
+
+.fileItem {
+    color: #ffffff;
+}
+
+.sceneItem {
+    color: #ffaa77;
+}
+
+.subsceneItem {
+    color: #ffcc77;
+}
+
+/* Clickable item styles */
+.clickableItem {
+    cursor: pointer;
+    padding: 0 3px;
+    border-radius: 3px;
+    transition: background-color 0.2s ease;
+}
+
+.clickableItem:hover {
+    background-color: rgba(51, 255, 51, 0.2);
+    text-decoration: underline;
+}
+
+.directoryItem.clickableItem:hover {
+    background-color: rgba(119, 170, 255, 0.2);
+}
+
+.sceneItem.clickableItem:hover {
+    background-color: rgba(255, 170, 119, 0.2);
+}
+
+.subsceneItem.clickableItem:hover {
+    background-color: rgba(255, 204, 119, 0.2);
+}
+
+.fileItem.clickableItem:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.restrictedItem.clickableItem:hover {
+    background-color: rgba(255, 51, 51, 0.2);
+}
+
+/* Line types */
+.command {
+    color: #33ff99; /* Bright green for commands */
+    font-weight: bold;
+}
+
+.output {
+    color: #ccffcc; /* Light green for standard output */
+}
+
+.error {
+    color: #ff5555; /* Bright red for errors */
+    font-weight: bold;
+}
+
+.warning {
+    color: #ffff55; /* Bright yellow for warnings */
+}
+
+.success {
+    color: #55ff55; /* Bright green for success messages */
+}
+
+/* Specific line types */
+.fileContent {
+    color: #99ccff; /* Light blue for file contents */
+    border-left: 2px solid #3377ff;
+    padding-left: 5px;
+    background-color: rgba(30, 30, 50, 0.3);
+}
+
+.directoryListing {
+    color: #aaddff; /* Light blue for directory listings */
+}
+
+.fileListing {
+    color: #ffffff; /* White for file listings */
+}
+
+.sceneListing {
+    color: #ffaa77; /* Orange for scene listings */
+}
+
+.subsceneListing {
+    color: #ffcc77; /* Light orange for subscene listings */
+}
+
+.restrictedListing {
+    color: #ff7777; /* Red for restricted listings */
+}
+
+.header {
+    color: #ffffff; /* White for headers */
+    font-weight: bold;
+    border-bottom: 1px solid #33ff33;
+    margin-bottom: 3px;
+}
+
+.helpCommand {
+    color: #ffdd99; /* Light orange for help commands */
+    font-weight: bold;
+}
+
+.helpDescription {
+    color: #ccccff; /* Light purple for help descriptions */
+    padding-left: 15px;
+}
+
+.hint {
+    color: #aaaaff; /* Light blue for hints */
+    font-style: italic;
+}
+
+.loginSuccess {
+    color: #55ff55; /* Bright green */
+    font-weight: bold;
+}
+
+.loginFailure {
+    color: #ff5555; /* Bright red */
+    font-weight: bold;
+}
+
+.accessDenied {
+    color: #ff5555; /* Bright red */
+    font-weight: bold;
+    background-color: rgba(50, 0, 0, 0.3);
+    padding: 2px 5px;
+}
+
+/* Terminal Input */
+.inputLine {
+    display: flex;
+    padding: 2px 0;
+    width: 100%;
+    position: sticky;
+    bottom: 0;
+    background-color: var(--terminal-bg, #000);
+    border-top: 1px solid rgba(51, 255, 51, 0.2);
+}
+
+.prompt {
+    color: var(--secondary-color, #ff3333);
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.input {
+    flex: 1;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: var(--secondary-color, #ff3333);
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    caret-color: var(--secondary-color, #ff3333);
+    margin-left: 5px;
+    padding: 0;
+    width: 100%;
+}
+
+/* Tab Completions */
+.completions {
+    position: absolute;
+    bottom: 35px;
+    left: 10px;
+    background-color: rgba(20, 0, 0, 0.9);
+    border: 1px solid var(--secondary-color, #ff3333);
+    border-radius: 2px;
+    max-height: 150px;
+    overflow-y: auto;
+    min-width: 150px;
+    max-width: 50%;
+    z-index: 100;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+}
+
+.completionItem {
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-align: left;
+}
+
+.completionItem:hover,
+.completionItem.active {
+    background-color: rgba(255, 51, 51, 0.2);
+}
+
+/* Focus state */
+.container.hasFocus {
+    outline: 1px solid var(--primary-color, #33ff33);
+    box-shadow: 0 0 8px rgba(51, 255, 51, 0.2);
+}
+
+/* Focus indicator - when terminal doesn't have focus */
+.focusIndicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    cursor: pointer;
+    backdrop-filter: blur(2px);
+}
+
+.focusHint {
+    color: var(--primary-color, #33ff33);
+    font-size: 16px;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(51, 255, 51, 0.7);
+    animation: pulse 2s infinite;
+    letter-spacing: 1px;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+/* Scrollbar styles */
+.outputContainer::-webkit-scrollbar {
+    width: 8px;
+}
+
+.outputContainer::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.outputContainer::-webkit-scrollbar-thumb {
+    background: rgba(51, 255, 51, 0.5);
+    border-radius: 4px;
+}
+
+.outputContainer::-webkit-scrollbar-thumb:hover {
+    background: rgba(51, 255, 51, 0.7);
+}
+
+/* Media queries */
+@media (max-width: 768px) {
+    .container {
+        min-height: 200px;
+    }
+
+    .line, .input {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 576px) {
+    .container {
+        min-height: 150px;
+        font-size: 12px;
+    }
+
+    .prompt, .input {
+        font-size: 12px;
+    }
+}
+
+/* Hide terminal on very small screens, as specified in the requirements */
+@media (max-width: 480px) {
+    .container {
+        display: none;
+    }
+}

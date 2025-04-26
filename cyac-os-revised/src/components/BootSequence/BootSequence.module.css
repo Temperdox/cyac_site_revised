@@ -1,0 +1,230 @@
+.bootContainer {
+    background-color: #000000;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.bootContainer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+    opacity: 0.3;
+    z-index: 10;
+}
+
+.bootScreen {
+    width: 80%;
+    max-width: 800px;
+    height: 80%;
+    max-height: 600px;
+    background-color: #000000;
+    border: 2px solid #444444;
+    border-radius: 4px;
+    padding: 20px;
+    color: #cccccc;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* BIOS Header */
+.biosHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #cc0000;
+}
+
+.biosLogo {
+    color: #cc0000;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.biosVersion {
+    color: #cc0000;
+    font-size: 16px;
+}
+
+/* Boot Messages */
+.bootMessages {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.bootLine {
+    color: #00ff00;
+    margin-bottom: 5px;
+    animation: typingEffect 0.05s steps(1, end);
+}
+
+@keyframes typingEffect {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.cursorLine {
+    height: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.cursor {
+    display: inline-block;
+    color: #00ff00;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 1;
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+}
+
+/* Progress Bars */
+.progressSection {
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.progressLabel {
+    color: #00cc00;
+    margin-bottom: 3px;
+}
+
+.progressBar {
+    width: 100%;
+    height: 20px;
+    background-color: #111111;
+    border: 1px solid #444444;
+    position: relative;
+}
+
+.progressFill {
+    height: 100%;
+    background-color: #00cc00;
+    position: absolute;
+    left: 0;
+    top: 0;
+    transition: width 0.1s linear;
+}
+
+.progressText {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 12px;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+    z-index: 1;
+}
+
+/* Boot Complete Message */
+.bootComplete {
+    margin-top: 20px;
+    color: #00ff00;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    animation: pulseEffect 1s infinite alternate;
+}
+
+@keyframes pulseEffect {
+    0% {
+        opacity: 0.7;
+        text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+    }
+    100% {
+        opacity: 1;
+        text-shadow: 0 0 15px rgba(0, 255, 0, 0.8);
+    }
+}
+
+/* Scrollbar Styling */
+.bootScreen::-webkit-scrollbar {
+    width: 6px;
+}
+
+.bootScreen::-webkit-scrollbar-track {
+    background: #000;
+}
+
+.bootScreen::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 3px;
+}
+
+.bootScreen::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .bootScreen {
+        width: 90%;
+        height: 90%;
+        font-size: 12px;
+    }
+
+    .biosLogo {
+        font-size: 16px;
+    }
+
+    .biosVersion {
+        font-size: 12px;
+    }
+
+    .bootComplete {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .bootScreen {
+        padding: 10px;
+    }
+
+    .progressBar {
+        height: 16px;
+    }
+
+    .progressText {
+        font-size: 10px;
+    }
+}

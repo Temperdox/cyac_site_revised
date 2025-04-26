@@ -1,0 +1,11 @@
+.container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none; /* Let clicks pass through to elements below unless there's a window */
+    z-index: 1000; /* High enough to be above other content but below modals */
+}
+
+/* Each Window component will have its own pointer-events: auto */
