@@ -13,10 +13,11 @@ const BootSequence: React.FC<BootSequenceProps> = ({ onComplete }) => {
     const [networkProgress, setNetworkProgress] = useState<number>(0);
     const [currentLine, setCurrentLine] = useState<number>(0);
     const [showCursor, setShowCursor] = useState<boolean>(true);
+    const versionNumber = '1.1.0'
 
     // Boot messages
     const bootMessages = [
-        'CYAC BIOS v2.5.7',
+        `CYAC BIOS v${versionNumber}`,
         'COPYRIGHT (C) 2025 CYBERACME TECHNOLOGIES',
         'BIOS DATE: 01/15/25',
         'INITIALIZING BIOS...',
@@ -206,7 +207,7 @@ const BootSequence: React.FC<BootSequenceProps> = ({ onComplete }) => {
                 {/* BIOS Header */}
                 <div className={styles.biosHeader}>
                     <span className={styles.biosLogo}>CYBERACME</span>
-                    <span className={styles.biosVersion}>BIOS v2.5.7</span>
+                    <span className={styles.biosVersion}>BIOS v{versionNumber}</span>
                 </div>
 
                 {/* Boot Messages */}
