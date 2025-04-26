@@ -381,3 +381,22 @@
         display: none;
     }
 }
+
+/* Executable item style */
+.exeItem {
+    color: #33ff99; /* Bright green for executable files */
+    font-weight: bold;
+}
+
+/* File listing styles */
+.executableListing {
+    color: #33ff99; /* Bright green for executable listings */
+}
+
+.textFileListing {
+    color: #ffffff; /* White for text file listings */
+}
+
+.otherFileListing {
+    color: #aaddff; /* Light blue for other file listings */
+}

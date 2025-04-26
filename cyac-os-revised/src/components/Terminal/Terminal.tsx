@@ -44,6 +44,42 @@ const Terminal: React.FC<TerminalProps> = ({
     const tempInputRef = useRef<string>(''); // Store temp input when navigating history
     const lastCommandRef = useRef<string | null>(null); // To track the last command executed
 
+    // Function to get an appropriate icon based on file name
+    const getFileIcon = (fileName: string): string => {
+        // Check file extension
+        const extension = fileName.split('.').pop()?.toLowerCase();
+
+        // Text files
+        if(['md', 'txt', 'rtf'].includes(extension || '')) {
+            return '📄'; // Text file icon
+        }
+
+        // Executable files
+        if(['exe'].includes(extension || '')) {
+            // Special application icons
+            const baseName = fileName.split('.')[0].toLowerCase();
+
+            // Custom icon mapping for specific applications
+            const customIconMap: Record<string, string> = {
+                'cyberacme_browser': '🌐',
+                'game_launcher': '🎮',
+                'calculator': '🧮',
+                'clock': '⏰',
+                'admin_panel': '⚠️',
+                'welcome': '👋'
+            };
+
+            if(customIconMap[baseName]) {
+                return customIconMap[baseName];
+            }
+
+            return '⚙️'; // Default executable icon
+        }
+
+        // Default icon
+        return '📄';
+    };
+
     // Function to force focus the terminal
     const forceFocusTerminal = () => {
         if (inputRef.current) {
@@ -74,11 +110,10 @@ const Terminal: React.FC<TerminalProps> = ({
             rst: styles.restrictedItem,
             dir: styles.directoryItem,
             file: styles.fileItem,
-            scene: styles.sceneItem,
-            subscene: styles.subsceneItem
+            exe: styles.exeItem
         };
 
-        const tagRegex = /\[(\/?)(r|g|b|y|c|w|rst|dir|scene|subscene|file)\]/g;
+        const tagRegex = /\[(\/?)(r|g|b|y|c|w|rst|dir|file|exe)]/g;
 
         let lastIndex = 0;
         const output = [];
@@ -118,8 +153,8 @@ const Terminal: React.FC<TerminalProps> = ({
     const parseColorTags = (text: string) => {
         if (typeof text !== 'string') return text;
 
-        // Look for a color‐wrapped listing, e.g. "[g]Directories:[/g] [dir]sites[/dir]…"
-        const listingRegex = /^\[([rgbcyw])\](Directories|Scenes|Sub-Scenes|Files):\[\/\1\]\s*(.*)$/;
+        // Look for a color‐wrapped listing for directories, executable files, text files, etc.
+        const listingRegex = /^\[([rgbcyw])](Directories|Executable Files|Text Files|Other Files):\[\/\1]\s*(.*)$/;
         const m = text.match(listingRegex);
 
         if (m) {
@@ -130,8 +165,8 @@ const Terminal: React.FC<TerminalProps> = ({
             // Use parseInlineTags (not parseColorTags) to color the label
             const coloredLabel = parseInlineTags(rawLabel);
 
-            // Now pull out each [dir]…[/dir], [scene]…[/scene], etc.
-            const itemRegex = /\[(dir|scene|subscene|file)\](.*?)\[\/(?:dir|scene|subscene|file)\]/gi;
+            // Now pull out each [dir]…[/dir], [exe]…[/exe], [file]…[/file], etc.
+            const itemRegex = /\[(dir|exe|file|rst)](.*?)\[\/(?:dir|exe|file|rst)]/gi;
             const elements: React.ReactNode[] = [];
             let idx = 0, mm;
 
@@ -139,33 +174,50 @@ const Terminal: React.FC<TerminalProps> = ({
                 const [fullTag, type, inner] = mm;
                 const name = inner.trim().replace(/\s*\(restricted access\)\s*/, '');
 
-                // Color just this one tag via parseInlineTags:
-                const coloredTag = parseInlineTags(fullTag);
+                // Get appropriate icon based on type and file name
+                let icon = '📄'; // Default icon
+
+                if (type === 'dir') {
+                    icon = '📁';
+                } else if (type === 'exe') {
+                    icon = getFileIcon(name);
+                } else if (type === 'file') {
+                    icon = getFileIcon(name);
+                } else if (type === 'rst') {
+                    icon = '🔒';
+                }
 
                 elements.push(
                     <span
                         key={`${type}-${name}-${idx++}`}
                         className={`${styles.clickableItem} ${styles[`${type}Item`]}`}
-                        onClick={() => handleItemClick(name, type)}
+                        onClick={() => handleItemClick(name, type === 'dir' ? 'directory' : 'file')}
                         style={{ marginRight: '0.5em', cursor: 'pointer' }}
                     >
-            {coloredTag}
-          </span>
+                        {icon} {name}{type === 'dir' ? '/' : ''}
+                    </span>
                 );
             }
 
             // If nothing matched, fallback to splitting on whitespace
             if (elements.length === 0 && itemsText.trim()) {
                 itemsText.trim().split(/\s+/).forEach((nm, i) => {
+                    let type = 'file';
+                    let icon = '📄';
+                    if (nm.endsWith('/')) {
+                        type = 'directory';
+                        icon = '📁';
+                        nm = nm.replace(/\/$/, '');
+                    }
                     elements.push(
                         <span
                             key={`plain-${i}`}
-                            className={`${styles.clickableItem} ${styles.directoryItem}`}
-                            onClick={() => handleItemClick(nm.replace(/\/$/, ''), 'dir')}
+                            className={`${styles.clickableItem} ${type === 'directory' ? styles.directoryItem : styles.fileItem}`}
+                            onClick={() => handleItemClick(nm, type)}
                             style={{ marginRight: '0.5em', cursor: 'pointer' }}
                         >
-              {nm}
-            </span>
+                            {icon} {nm}{type === 'directory' ? '/' : ''}
+                        </span>
                     );
                 });
             }
@@ -324,10 +376,7 @@ const Terminal: React.FC<TerminalProps> = ({
                 command = `cd ${itemName}`;
                 break;
 
-            case 'scene':
-            case 'subscene':
             case 'file':
-            case 'rst':
                 command = `cat ${itemName}`;
                 break;
 
@@ -478,17 +527,16 @@ const Terminal: React.FC<TerminalProps> = ({
             // Command completion
             const commands = [
                 'ls', 'cd', 'cat', 'pwd', 'clear', 'echo', 'date', 'whoami',
-                'login', 'logout', 'sudo', 'access', 'help', 'home', 'games',
-                'tetris', 'blackjack', 'snake', 'spaceinvaders'
+                'login', 'logout', 'sudo', 'access', 'help', 'home', 'game_launcher.exe',
+                'cyberacme_browser.exe', 'calculator.exe', 'clock.exe'
             ];
             completions = commands.filter(cmd => cmd.startsWith(currentWord.toLowerCase()));
         } else if (['cd', 'ls', 'cat'].includes(command)) {
             // This needs to connect to the file system
             const pathOptions = [
-                'home/', 'user/', 'sites/', 'restricted/', 'sys/', 'docs/',
-                'landing', 'propaganda', 'sitedirectory', 'clock', 'timer', 'hacker', 'tetris', 'blackjack',
-                'admin_panel', 'security', 'network', 'files',
-                'terminal_admin', 'user_manager', 'system_monitor', 'database'
+                'home/', 'programs/', 'system/', 'documents/',
+                'game_launcher.exe', 'cyberacme_browser.exe', 'calculator.exe', 'clock.exe',
+                'readme.txt', 'user_manual.txt', 'system_info.txt'
             ];
 
             completions = pathOptions.filter(path =>
@@ -555,15 +603,15 @@ const Terminal: React.FC<TerminalProps> = ({
             return styles.accessDenied;
         }
 
-        // Directory listings
+        // Directory and file listings
         if (line.startsWith('Directories:') || line.startsWith('[g]Directories:')) {
             return styles.directoryListing;
-        } else if (line.startsWith('Files:') || line.startsWith('[y]Files:')) {
-            return styles.fileListing;
-        } else if (line.startsWith('Scenes:') || line.startsWith('[c]Scenes:')) {
-            return styles.sceneListing;
-        } else if (line.startsWith('Sub-Scenes:') || line.startsWith('[b]Sub-Scenes:')) {
-            return styles.subsceneListing;
+        } else if (line.startsWith('Executable Files:') || line.startsWith('[c]Executable Files:')) {
+            return styles.executableListing;
+        } else if (line.startsWith('Text Files:') || line.startsWith('[y]Text Files:')) {
+            return styles.textFileListing;
+        } else if (line.startsWith('Other Files:') || line.startsWith('[b]Other Files:')) {
+            return styles.otherFileListing;
         } else if (line.startsWith('Restricted:') || line.startsWith('[r]Restricted:')) {
             return styles.restrictedListing;
         }
@@ -611,12 +659,9 @@ const Terminal: React.FC<TerminalProps> = ({
 
             {/* Terminal Input */}
             <form onSubmit={handleSubmit} className={styles.inputLine} onClick={handleTerminalClick}>
-        <span className={styles.prompt}>
-          {
-              // Generate the prompt based on user type
-              `${'GUEST'}@CYAC:${currentPath}$`
-          }
-        </span>
+                <span className={styles.prompt}>
+                    {`${'GUEST'}@CYAC:${currentPath}$`}
+                </span>
                 <input
                     ref={inputRef}
                     type="text"

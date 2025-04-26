@@ -1,0 +1,488 @@
+.browserContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #001;
+    overflow: hidden;
+    font-family: 'Courier New', monospace;
+    color: #33ff33;
+}
+
+/* Browser Toolbar */
+.browserToolbar {
+    height: 36px;
+    background: linear-gradient(to bottom, #000600, #001100);
+    border-bottom: 1px solid #33ff33;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+}
+
+.navigationButtons {
+    display: flex;
+    gap: 5px;
+    margin-right: 10px;
+}
+
+.navButton {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(to bottom, #001800, #000800);
+    border: 1px solid #33ff33;
+    color: #33ff33;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.navButton:hover:not(:disabled) {
+    background: linear-gradient(to bottom, #003300, #002200);
+    box-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+}
+
+.navButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.urlBar {
+    flex: 1;
+    height: 24px;
+    display: flex;
+    background: #000800;
+    border: 1px solid #33ff33;
+    overflow: hidden;
+}
+
+.urlInput {
+    flex: 1;
+    background: #000800;
+    border: none;
+    outline: none;
+    color: #33ff33;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    padding: 0 10px;
+}
+
+.goButton {
+    width: 30px;
+    background: linear-gradient(to bottom, #001800, #000800);
+    border: none;
+    border-left: 1px solid #33ff33;
+    color: #33ff33;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.goButton:hover {
+    background: linear-gradient(to bottom, #003300, #002200);
+}
+
+.browserControls {
+    display: flex;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.controlButton {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(to bottom, #001800, #000800);
+    border: 1px solid #33ff33;
+    color: #33ff33;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.controlButton:hover {
+    background: linear-gradient(to bottom, #003300, #002200);
+    box-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+}
+
+/* Bookmarks Bar */
+.bookmarksBar {
+    height: 80px;
+    background: rgba(0, 10, 0, 0.7);
+    border-bottom: 1px solid #33ff33;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    overflow-x: auto;
+}
+
+.bookmarkItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    height: 85%;
+    margin-right: 10px;
+    background: linear-gradient(to bottom, #001800, #000800);
+    border: 1px solid #33ff33;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+    min-width: 70px;
+    position: relative;
+}
+
+.bookmarkItem:hover {
+    background: linear-gradient(to bottom, #003300, #002200);
+    box-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+    transform: translateY(-2px);
+}
+
+.bookmarkIcon {
+    margin-bottom: 5px;
+    font-size: 20px;
+}
+
+.bookmarkImage {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 5px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 8px;
+}
+
+.bookmarkTitle {
+    font-size: 12px;
+    color: #33ff33;
+    text-align: center;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Browser Content */
+.browserContent {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.browserFrame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #000;
+}
+
+/* Loading Overlay */
+.loadingOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+.loadingSpinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(51, 255, 51, 0.1);
+    border-top: 3px solid #33ff33;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+.loadingText {
+    color: #33ff33;
+    font-size: 14px;
+    text-shadow: 0 0 5px rgba(51, 255, 51, 0.7);
+    letter-spacing: 2px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error Overlay */
+.errorOverlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 400px;
+    background: rgba(40, 0, 0, 0.9);
+    border: 2px solid #ff3333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    z-index: 10;
+}
+
+.errorIcon {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.errorText {
+    color: #ff3333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.errorButton {
+    background: linear-gradient(to bottom, #330000, #220000);
+    border: 1px solid #ff3333;
+    color: #ff3333;
+    padding: 5px 15px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+}
+
+.errorButton:hover {
+    background: linear-gradient(to bottom, #440000, #330000);
+    box-shadow: 0 0 5px rgba(255, 51, 51, 0.5);
+}
+
+/* Modal */
+.modalOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+}
+
+.modal {
+    width: 80%;
+    max-width: 400px;
+    background: #001100;
+    border: 2px solid #33ff33;
+    display: flex;
+    flex-direction: column;
+}
+
+.modalHeader {
+    background: linear-gradient(to bottom, #003300, #002200);
+    color: #33ff33;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid #33ff33;
+}
+
+.modalContent {
+    padding: 15px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.modalField {
+    margin-bottom: 15px;
+}
+
+.modalField label {
+    display: block;
+    margin-bottom: 5px;
+    color: #33ff33;
+}
+
+.modalInput {
+    width: 100%;
+    background: #000800;
+    border: 1px solid #33ff33;
+    color: #33ff33;
+    padding: 5px 10px;
+    font-family: 'Courier New', monospace;
+}
+
+.modalFooter {
+    padding: 10px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    border-top: 1px solid #33ff33;
+}
+
+.modalButton {
+    background: linear-gradient(to bottom, #001800, #000800);
+    border: 1px solid #33ff33;
+    color: #33ff33;
+    padding: 5px 15px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+}
+
+.modalButton:hover {
+    background: linear-gradient(to bottom, #003300, #002200);
+    box-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+}
+
+/* Settings */
+.settingSection {
+    margin-bottom: 20px;
+}
+
+.settingSection h3 {
+    color: #33ff33;
+    margin-top: 0;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(51, 255, 51, 0.3);
+    padding-bottom: 5px;
+}
+
+.settingItem {
+    margin-bottom: 8px;
+}
+
+.settingItem label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.settingItem input {
+    margin-right: 10px;
+}
+
+/* Custom checkboxes */
+.settingItem input[type="checkbox"] {
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    border: 1px solid #33ff33;
+    background: #000800;
+    position: relative;
+}
+
+.settingItem input[type="checkbox"]:checked::after {
+    content: '✓';
+    color: #33ff33;
+    position: absolute;
+    top: -2px;
+    left: 2px;
+    font-size: 14px;
+}
+
+/* Scrollbar styles */
+.modalContent::-webkit-scrollbar,
+.bookmarksBar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.modalContent::-webkit-scrollbar-track,
+.bookmarksBar::-webkit-scrollbar-track {
+    background: #000;
+}
+
+.modalContent::-webkit-scrollbar-thumb,
+.bookmarksBar::-webkit-scrollbar-thumb {
+    background: #33ff33;
+    border-radius: 4px;
+}
+
+.modalContent::-webkit-scrollbar-thumb:hover,
+.bookmarksBar::-webkit-scrollbar-thumb:hover {
+    background: #55ff55;
+}
+
+/* CRT Effect */
+.browserContainer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+    opacity: 0.1;
+    z-index: 1000;
+}
+
+/* Home page grid layout */
+.homeGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+    padding: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navigationButtons {
+        margin-right: 5px;
+    }
+
+    .browserControls {
+        margin-left: 5px;
+    }
+
+    .navButton, .controlButton {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+    }
+
+    .bookmarkTitle {
+        font-size: 10px;
+    }
+
+    .bookmarksBar {
+        height: 70px;
+    }
+}
+
+@media (max-width: 480px) {
+    .browserToolbar {
+        height: 32px;
+        padding: 0 5px;
+    }
+
+    .navigationButtons {
+        gap: 2px;
+    }
+
+    .browserControls {
+        gap: 2px;
+    }
+
+    .bookmarksBar {
+        height: 60px;
+        padding: 0 5px;
+    }
+
+    .bookmarkItem {
+        padding: 2px 5px;
+        min-width: 60px;
+    }
+
+    .bookmarkImage {
+        width: 30px;
+        height: 30px;
+    }
+}

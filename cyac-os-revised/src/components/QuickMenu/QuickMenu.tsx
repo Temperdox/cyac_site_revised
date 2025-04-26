@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styles from './QuickMenu.module.css';
+import useFileSystem from "../../contexts/FileSystem/useFileSystem.ts";
+import {FileType} from "../../contexts/FileSystem";
+
 
 // Define global window extension
 declare global {
@@ -15,6 +18,9 @@ interface FileItem {
     name: string;
     type: 'directory' | 'file' | 'scene' | 'subscene';
     restricted?: boolean;
+    metadata?: {
+        icon?: string;
+    };
 }
 
 interface QuickMenuProps {
@@ -50,6 +56,7 @@ const QuickMenu: React.FC<QuickMenuProps> = ({
 
     const menuRef = useRef<HTMLDivElement>(null);
     const searchTimeoutRef = useRef<TimeoutId | null>(null);
+    const fileSystem = useFileSystem();
 
     // Close menu when clicking outside
     useEffect(() => {
@@ -66,44 +73,56 @@ const QuickMenu: React.FC<QuickMenuProps> = ({
         };
     }, [onClose]);
 
-    // Mock file system data - this would be replaced with actual data from context
-    const getDirectoryContents = (path: string): FileItem[] => {
-        // This needs to get data from the file system
-        //TODO get data from the file system
-        if (path === '/home') {
-            return [
-                { name: 'documents', type: 'directory' },
-                { name: 'programs', type: 'directory' },
-                { name: 'games', type: 'directory' },
-                { name: 'system', type: 'directory' },
-                { name: 'user', type: 'directory' },
-                { name: 'readme.txt', type: 'file' },
-                { name: 'welcome', type: 'scene' }
-            ];
-        } else if (path === '/home/programs') {
-            return [
-                { name: 'browser', type: 'directory' },
-                { name: 'utilities', type: 'directory' },
-                { name: 'admin', type: 'directory', restricted: true },
-                { name: 'text_editor', type: 'scene' },
-                { name: 'calculator', type: 'scene' },
-                { name: 'terminal', type: 'scene' }
-            ];
-        } else if (path === '/home/games') {
-            return [
-                { name: 'tetris', type: 'scene' },
-                { name: 'snake', type: 'scene' },
-                { name: 'spaceinvaders', type: 'scene' },
-                { name: 'tictactoe', type: 'scene' }
-            ];
-        } else if (path.includes('restricted') && !isLoggedIn) {
-            return [
-                { name: 'Access Denied', type: 'file', restricted: true }
-            ];
+    // Function to get file icon based on name and metadata
+    const getFileIcon = (fileName: string, item: FileItem): string => {
+        // Check if the item has a custom icon in metadata
+        if (item.metadata?.icon && typeof item.metadata.icon === 'string') {
+            return item.metadata.icon;
         }
 
-        // Default empty directory
-        return [];
+        // Check file extension
+        const extension = fileName.split('.').pop()?.toLowerCase();
+
+        // Text files
+        if(['md', 'txt', 'rtf'].includes(extension || '')) {
+            return '📄'; // Text file icon
+        }
+
+        // Executable files
+        if(['exe'].includes(extension || '')) {
+            // Special application icons
+            const baseName = fileName.split('.')[0].toLowerCase();
+
+            // Custom icon mapping for specific applications
+            const customIconMap: Record<string, string> = {
+                'cyberacme_browser': 'img:/programIcons/browser-icon.png',
+                'game_launcher': 'img:/programIcons/game-launcher-icon.png',
+                'calculator': 'img:/programIcons/calculator-icon.png',
+                'clock': 'img:/programIcons/clock-icon.png',
+                'admin_panel': 'img:/programIcons/admin-icon.png',
+                'welcome': 'img:/programIcons/welcome-icon.png'
+            };
+
+            if(customIconMap[baseName]) {
+                return customIconMap[baseName];
+            }
+
+            return '⚙️'; // Default executable icon
+        }
+
+        // Default icon
+        return '📄';
+    };
+
+    // Mock file system data - this would be replaced with actual data from context
+    const getDirectoryContents = (path: string): FileItem[] => {
+        const contents = fileSystem.listDirectory(path);
+        return contents.map(item => ({
+            name: item.name,
+            type: item.type === FileType.Directory ? 'directory' : 'file',
+            restricted: item.restricted,
+            metadata: item.metadata
+        }));
     };
 
     // Navigate to a directory
@@ -149,9 +168,7 @@ const QuickMenu: React.FC<QuickMenuProps> = ({
         // Add some mock results based on search query
         if (searchQuery.includes('game') || searchQuery.includes('play')) {
             results.push(
-                { name: 'tetris', type: 'scene' },
-                { name: 'snake', type: 'scene' },
-                { name: 'games', type: 'directory' }
+                { name: 'game_launcher.exe', type: 'file', metadata: { icon: 'img:/programIcons/game-launcher-icon.png' } }
             );
         }
 
@@ -159,7 +176,14 @@ const QuickMenu: React.FC<QuickMenuProps> = ({
             results.push(
                 { name: 'documents', type: 'directory' },
                 { name: 'readme.txt', type: 'file' },
-                { name: 'manual.txt', type: 'file' }
+                { name: 'user_manual.txt', type: 'file' }
+            );
+        }
+
+        if (searchQuery.includes('browser') || searchQuery.includes('web')) {
+            results.push(
+                { name: 'browser', type: 'directory' },
+                { name: 'cyberacme_browser.exe', type: 'file', metadata: { icon: 'img:/programIcons/browser-icon.png' } }
             );
         }
 
@@ -200,7 +224,7 @@ const QuickMenu: React.FC<QuickMenuProps> = ({
             const newPath = `${targetDir === '/' ? '' : targetDir}/${item.name}`;
             navigateTo(newPath);
         } else {
-            // For scenes, subscenes, and files
+            // For files, whether executable or not
             const command = `cd ${targetDir} && cat ${item.name}`;
             onExecuteCommand(command);
             onClose();
@@ -211,9 +235,6 @@ const QuickMenu: React.FC<QuickMenuProps> = ({
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Simulate authentication for now, just to get the site running, need to factor in Discord's OAuth2 and impl
-        // JWT tokenization of user ID
-        //TODO add Discord's OAuth2 auth flow and save user ID as part of JWT Token for API calls to external sources
         if (username === 'admin' && password === 'password') {
             setIsLoggedIn(true);
             setShowLoginModal(false);
@@ -256,15 +277,43 @@ const QuickMenu: React.FC<QuickMenuProps> = ({
 
     // Get current contents based on path or search results
     const getCurrentContents = () => {
-        return searchResults || getDirectoryContents(currentPath);
+        const contents = searchResults || getDirectoryContents(currentPath);
+
+        // Filter content by type
+        const directories = contents.filter(i => i.type === 'directory');
+
+        // Executable files (with .exe extension or scene type)
+        const executableFiles = contents.filter(i =>
+            (i.type === 'file' && i.name.endsWith('.exe')) ||
+            i.type === 'scene'
+        );
+
+        // Text files
+        const textFiles = contents.filter(i =>
+            i.type === 'file' &&
+            (i.name.endsWith('.txt') || i.name.endsWith('.md') || i.name.endsWith('.rtf'))
+        );
+
+        // Other files
+        const otherFiles = contents.filter(i =>
+            (i.type === 'file' &&
+                !i.name.endsWith('.exe') &&
+                !i.name.endsWith('.txt') &&
+                !i.name.endsWith('.md') &&
+                !i.name.endsWith('.rtf')) ||
+            i.type === 'subscene'
+        );
+
+        return {
+            directories,
+            executableFiles,
+            textFiles,
+            otherFiles
+        };
     };
 
-    // Filter content by type
-    const contents = getCurrentContents();
-    const directories = contents.filter(i => i.type === 'directory');
-    const scenes = contents.filter(i => i.type === 'scene');
-    const subscenes = contents.filter(i => i.type === 'subscene');
-    const files = contents.filter(i => i.type === 'file');
+    // Get filtered and categorized contents
+    const { directories, executableFiles, textFiles, otherFiles } = getCurrentContents();
 
     // Can the user access an item?
     const canAccess = (item: FileItem) => {
@@ -370,73 +419,97 @@ const QuickMenu: React.FC<QuickMenuProps> = ({
                                     >
                                         <span>{canAccess(item) ? '📁' : '🔒'}</span>
                                         <span className={styles.itemName}>
-                      {item.name}
+                                            {item.name}
                                             {searchResults && <span className={styles.itemPath}>{currentPath}</span>}
-                    </span>
+                                        </span>
                                     </div>
                                 ))}
                             </>
                         )}
 
-                        {scenes.length > 0 && (
+                        {executableFiles.length > 0 && (
                             <>
-                                <div className={`${styles.sectionHeader} ${styles.scenesHeader}`}>SCENES</div>
-                                {scenes.map((item, idx) => (
-                                    <div
-                                        key={`scene-${idx}`}
-                                        className={`${styles.item} ${styles.scene} ${!canAccess(item) ? styles.locked : ''}`}
-                                        onClick={() => canAccess(item) && executeWithFullPath(item)}
-                                    >
-                                        <span>📺</span>
-                                        <span className={styles.itemName}>
-                      {item.name}
-                                            {searchResults && <span className={styles.itemPath}>{currentPath}</span>}
-                    </span>
-                                    </div>
-                                ))}
+                                <div className={`${styles.sectionHeader} ${styles.executablesHeader}`}>EXECUTABLE FILES</div>
+                                {executableFiles.map((item, idx) => {
+                                    const icon = getFileIcon(item.name, item);
+                                    const isImageIcon = typeof icon === 'string' && icon.startsWith('img:');
+
+                                    return (
+                                        <div
+                                            key={`exe-${idx}`}
+                                            className={`${styles.item} ${styles.executable} ${!canAccess(item) ? styles.locked : ''}`}
+                                            onClick={() => canAccess(item) && executeWithFullPath(item)}
+                                        >
+                                            {isImageIcon ? (
+                                                <div
+                                                    className={styles.itemImage}
+                                                    style={{backgroundImage: `url(${icon.substring(4)})`}}
+                                                ></div>
+                                            ) : (
+                                                <span>{canAccess(item) ? icon : '🔒'}</span>
+                                            )}
+                                            <span className={styles.itemName}>
+                                                {item.name}
+                                                {searchResults && <span className={styles.itemPath}>{currentPath}</span>}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
                             </>
                         )}
 
-                        {subscenes.length > 0 && (
+                        {textFiles.length > 0 && (
                             <>
-                                <div className={`${styles.sectionHeader} ${styles.subscenesHeader}`}>SUB-SCENES</div>
-                                {subscenes.map((item, idx) => (
-                                    <div
-                                        key={`subscene-${idx}`}
-                                        className={`${styles.item} ${styles.subscene} ${!canAccess(item) ? styles.locked : ''}`}
-                                        onClick={() => canAccess(item) && executeWithFullPath(item)}
-                                    >
-                                        <span>🪟</span>
-                                        <span className={styles.itemName}>
-                      {item.name}
-                                            {searchResults && <span className={styles.itemPath}>{currentPath}</span>}
-                    </span>
-                                    </div>
-                                ))}
-                            </>
-                        )}
-
-                        {files.length > 0 && (
-                            <>
-                                <div className={`${styles.sectionHeader} ${styles.filesHeader}`}>FILES</div>
-                                {files.map((item, idx) => (
+                                <div className={`${styles.sectionHeader} ${styles.filesHeader}`}>TEXT FILES</div>
+                                {textFiles.map((item, idx) => (
                                     <div
                                         key={`file-${idx}`}
                                         className={`${styles.item} ${styles.file} ${!canAccess(item) ? styles.locked : ''}`}
                                         onClick={() => canAccess(item) && executeWithFullPath(item)}
                                     >
-                                        <span>📄</span>
+                                        <span>{canAccess(item) ? '📄' : '🔒'}</span>
                                         <span className={styles.itemName}>
-                      {item.name}
+                                            {item.name}
                                             {searchResults && <span className={styles.itemPath}>{currentPath}</span>}
-                    </span>
+                                        </span>
                                     </div>
                                 ))}
                             </>
                         )}
 
+                        {otherFiles.length > 0 && (
+                            <>
+                                <div className={`${styles.sectionHeader} ${styles.otherFilesHeader}`}>OTHER FILES</div>
+                                {otherFiles.map((item, idx) => {
+                                    const icon = getFileIcon(item.name, item);
+                                    const isImageIcon = typeof icon === 'string' && icon.startsWith('img:');
+
+                                    return (
+                                        <div
+                                            key={`other-${idx}`}
+                                            className={`${styles.item} ${styles.file} ${!canAccess(item) ? styles.locked : ''}`}
+                                            onClick={() => canAccess(item) && executeWithFullPath(item)}
+                                        >
+                                            {isImageIcon ? (
+                                                <div
+                                                    className={styles.itemImage}
+                                                    style={{backgroundImage: `url(${icon.substring(4)})`}}
+                                                ></div>
+                                            ) : (
+                                                <span>{canAccess(item) ? icon : '🔒'}</span>
+                                            )}
+                                            <span className={styles.itemName}>
+                                                {item.name}
+                                                {searchResults && <span className={styles.itemPath}>{currentPath}</span>}
+                                            </span>
+                                        </div>
+                                    );
+                                })}
+                            </>
+                        )}
+
                         {/* No items message */}
-                        {(directories.length === 0 && scenes.length === 0 && subscenes.length === 0 && files.length === 0) && (
+                        {(directories.length === 0 && executableFiles.length === 0 && textFiles.length === 0 && otherFiles.length === 0) && (
                             <div className={styles.noItemsMessage}>
                                 {searchResults ? 'No results found' : 'No items in this directory'}
                             </div>

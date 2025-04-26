@@ -1,0 +1,366 @@
+.gameLauncher {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #0a0a12;
+    color: #33ff33;
+    font-family: 'Courier New', monospace;
+    overflow: hidden;
+}
+
+/* Header */
+.header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: linear-gradient(to bottom, #000800, #001100);
+    border-bottom: 1px solid #33ff33;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logoIcon {
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.logoText {
+    font-size: 18px;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(51, 255, 51, 0.7);
+    letter-spacing: 1px;
+}
+
+.searchBar {
+    flex: 1;
+    margin: 0 20px;
+}
+
+.searchBar input {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: #000800;
+    border: 1px solid #33ff33;
+    color: #33ff33;
+    font-family: 'Courier New', monospace;
+    outline: none;
+}
+
+.searchBar input:focus {
+    box-shadow: 0 0 10px rgba(51, 255, 51, 0.5);
+}
+
+.controls {
+    display: flex;
+}
+
+.controlButton {
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(to bottom, #001800, #000800);
+    border: 1px solid #33ff33;
+    color: #33ff33;
+    font-size: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.controlButton:hover {
+    background: linear-gradient(to bottom, #003300, #002200);
+    box-shadow: 0 0 10px rgba(51, 255, 51, 0.5);
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    background-color: #000500;
+    border-bottom: 1px solid #33ff33;
+}
+
+.tabButton {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    color: #33ff33;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    letter-spacing: 1px;
+}
+
+.tabButton:hover {
+    background-color: rgba(51, 255, 51, 0.1);
+}
+
+.tabButton.active {
+    border-bottom: 2px solid #33ff33;
+    background-color: rgba(51, 255, 51, 0.2);
+    font-weight: bold;
+}
+
+/* Content */
+.content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+/* Game Grid */
+.gameGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+/* Game Card */
+.gameCard {
+    background: linear-gradient(to bottom, #001500, #000800);
+    border: 1px solid #33ff33;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.gameCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(51, 255, 51, 0.3);
+}
+
+.gameImage {
+    width: 100%;
+    height: 120px;
+    background-color: #000500;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-bottom: 1px solid #33ff33;
+}
+
+.gameTitle {
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.gameButton {
+    margin: 5px 10px 10px 10px;
+    padding: 8px 0;
+    background: linear-gradient(to bottom, #003300, #001100);
+    border: 1px solid #33ff33;
+    color: #33ff33;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.gameButton:hover:not(:disabled) {
+    background: linear-gradient(to bottom, #005500, #003300);
+    box-shadow: 0 0 10px rgba(51, 255, 51, 0.5);
+}
+
+.gameButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: linear-gradient(to bottom, #001100, #000800);
+}
+
+/* Install Progress */
+.installProgress {
+    margin: 5px 10px 10px 10px;
+    height: 30px;
+    background-color: #000500;
+    border: 1px solid #33ff33;
+    position: relative;
+}
+
+.installProgressBar {
+    height: 100%;
+    background: linear-gradient(to right, #003300, #006600);
+    transition: width 0.3s ease;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.installProgressText {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+    font-size: 12px;
+}
+
+/* Empty State */
+.emptyState {
+    width: 100%;
+    text-align: center;
+    padding: 50px 0;
+    opacity: 0.7;
+}
+
+.emptyIcon {
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+
+.emptyText {
+    color: #ccffcc;
+    line-height: 1.5;
+}
+
+/* Footer */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background: linear-gradient(to bottom, #001100, #000800);
+    border-top: 1px solid #33ff33;
+    font-size: 12px;
+}
+
+.status {
+    display: flex;
+    align-items: center;
+}
+
+.online {
+    color: #33ff33;
+    position: relative;
+    padding-left: 15px;
+}
+
+.online::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background-color: #33ff33;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.installing {
+    color: #ffcc33;
+    position: relative;
+    padding-left: 15px;
+}
+
+.installing::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background-color: #ffcc33;
+    border-radius: 50%;
+    animation: pulse 1s infinite;
+}
+
+.copyright {
+    color: #aaaaaa;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(51, 255, 51, 0.7);
+    }
+    70% {
+        opacity: 0.7;
+        box-shadow: 0 0 0 6px rgba(51, 255, 51, 0);
+    }
+    100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(51, 255, 51, 0);
+    }
+}
+
+/* Scrollbar styling */
+.content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.content::-webkit-scrollbar-track {
+    background: #000500;
+}
+
+.content::-webkit-scrollbar-thumb {
+    background: #005500;
+    border-radius: 4px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+    background: #008800;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .gameGrid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 15px;
+    }
+
+    .searchBar {
+        margin: 0 10px;
+    }
+
+    .logoText {
+        font-size: 16px;
+    }
+
+    .gameImage {
+        height: 100px;
+    }
+
+    .gameTitle {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 576px) {
+    .header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .searchBar {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .gameGrid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+    }
+
+    .tabButton {
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+}

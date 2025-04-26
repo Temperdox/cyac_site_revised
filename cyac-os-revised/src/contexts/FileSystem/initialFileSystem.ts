@@ -1,4 +1,8 @@
 import { FileSystemItem, FileType } from './fileSystemTypes.ts';
+import Browser from "../../computers/myComputer/programs/public/browser/Browser.tsx";
+// When you actually implement, import the Browser and GameLauncher components
+// import Browser from '../components/Browser/Browser';
+// import GameLauncher from '../components/GameLauncher/GameLauncher';
 
 /**
  * Initial file system structure
@@ -20,7 +24,7 @@ export const initialFileSystem: FileSystemItem[] = [
                     {
                         name: 'user_manual.txt',
                         type: FileType.File,
-                        content: 'CYBERACME OS USER MANUAL\n\n1. Basic Commands:\n   - ls: List files and directories\n   - cd: Change directory\n   - cat: View file contents\n   - clear: Clear terminal screen\n   - help: Display help information\n\n2. Navigation:\n   Use "cd" to navigate directories. Example: cd documents\n   Use "ls" to see available files and folders.\n\n3. Running Programs:\n   Use "cat" command on program files to run them.\n   Example: cat tetris'
+                        content: 'CYBERACME OS USER MANUAL\n\n1. Basic Commands:\n   - ls: List files and directories\n   - cd: Change directory\n   - cat: View file contents\n   - clear: Clear terminal screen\n   - help: Display help information\n\n2. Navigation:\n   Use "cd" to navigate directories. Example: cd documents\n   Use "ls" to see available files and folders.\n\n3. Running Programs:\n   Use "cat" command on program files to run them.\n   Example: cat game_launcher.exe'
                     }
                 ]
             },
@@ -29,34 +33,34 @@ export const initialFileSystem: FileSystemItem[] = [
                 type: FileType.Directory,
                 children: [
                     {
-                        name: 'games',
-                        type: FileType.Directory,
-                        children: [
-                            {
-                                name: 'tetris',
-                                type: FileType.Scene,
-                                content: 'TETRIS_GAME_COMPONENT'
-                            },
-                            {
-                                name: 'snake',
-                                type: FileType.Scene,
-                                content: 'SNAKE_GAME_COMPONENT'
-                            }
-                        ]
+                        name: 'game_launcher.exe',
+                        type: FileType.File,
+                        content: 'GAME_LAUNCHER_COMPONENT',
+                        // When you implement GameLauncher, uncomment this:
+                        // component: GameLauncher,
+                        metadata: {
+                            icon: 'img:/programIcons/game-launcher-icon.png'
+                        }
                     },
                     {
                         name: 'utilities',
                         type: FileType.Directory,
                         children: [
                             {
-                                name: 'calculator',
-                                type: FileType.Scene,
-                                content: 'CALCULATOR_COMPONENT'
+                                name: 'calculator.exe',
+                                type: FileType.File,
+                                content: 'CALCULATOR_COMPONENT',
+                                metadata: {
+                                    icon: 'img:/programIcons/calculator-icon.png'
+                                }
                             },
                             {
-                                name: 'clock',
-                                type: FileType.Scene,
-                                content: 'CLOCK_COMPONENT'
+                                name: 'clock.exe',
+                                type: FileType.File,
+                                content: 'CLOCK_COMPONENT',
+                                metadata: {
+                                    icon: 'img:/programIcons/clock-icon.png'
+                                }
                             }
                         ]
                     },
@@ -65,9 +69,13 @@ export const initialFileSystem: FileSystemItem[] = [
                         type: FileType.Directory,
                         children: [
                             {
-                                name: 'cyberacme_browser',
-                                type: FileType.Scene,
-                                content: 'BROWSER_COMPONENT'
+                                name: 'cyberacme_browser.exe',
+                                type: FileType.File,
+                                content: 'BROWSER_COMPONENT',
+                                component: Browser,
+                                metadata: {
+                                    icon: 'img:/programIcons/browser-icon.png'
+                                }
                             }
                         ]
                     }
@@ -104,9 +112,12 @@ export const initialFileSystem: FileSystemItem[] = [
                 ]
             },
             {
-                name: 'welcome',
-                type: FileType.Scene,
-                content: 'WELCOME_SCREEN_COMPONENT'
+                name: 'welcome.exe',
+                type: FileType.File,
+                content: 'WELCOME_SCREEN_COMPONENT',
+                metadata: {
+                    icon: 'img:/programIcons/welcome-icon.png'
+                }
             },
             {
                 name: 'restricted',
@@ -114,10 +125,13 @@ export const initialFileSystem: FileSystemItem[] = [
                 restricted: true,
                 children: [
                     {
-                        name: 'admin_panel',
-                        type: FileType.Scene,
+                        name: 'admin_panel.exe',
+                        type: FileType.File,
                         restricted: true,
-                        content: 'ADMIN_PANEL_COMPONENT'
+                        content: 'ADMIN_PANEL_COMPONENT',
+                        metadata: {
+                            icon: 'img:/programIcons/admin-icon.png'
+                        }
                     },
                     {
                         name: 'secret_files',

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CyberAcme Browser</title>
+  <style>
+    /* CRT-style retro effect */
+    @font-face {
+      font-family: 'VT323';
+      src: url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Courier New', monospace;
+    }
+
+    body {
+      background-color: #000800;
+      background-image:
+              linear-gradient(rgba(0, 20, 0, 0.9), rgba(0, 20, 0, 0.95)),
+              repeating-linear-gradient(
+                      to bottom,
+                      transparent 0px,
+                      rgba(0, 255, 0, 0.05) 1px,
+                      transparent 2px
+              );
+      color: #33ff33;
+      overflow-x: hidden;
+      height: 100vh;
+      position: relative;
+    }
+
+    /* CRT screen effect */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+              radial-gradient(
+                      circle at center,
+                      transparent 0%,
+                      rgba(0, 0, 0, 0.1) 90%,
+                      rgba(0, 0, 0, 0.3) 100%
+              );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Scan lines effect */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+              repeating-linear-gradient(
+                      0deg,
+                      rgba(0, 0, 0, 0.15),
+                      rgba(0, 0, 0, 0.15) 1px,
+                      transparent 1px,
+                      transparent 2px
+              );
+      pointer-events: none;
+      z-index: 2;
+      animation: scanlines 10s linear infinite;
+    }
+
+    @keyframes scanlines {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100px; }
+    }
+
+    /* Flicker animation */
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      92% { opacity: 1; }
+      93% { opacity: 0.8; }
+      94% { opacity: 1; }
+      98% { opacity: 1; }
+      99% { opacity: 0.8; }
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 3;
+      animation: flicker 30s infinite;
+    }
+
+    /* Header text glow */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header .logo {
+      font-size: 2.5rem;
+      color: #33ff33;
+      text-shadow: 0 0 10px rgba(51, 255, 51, 0.7);
+      letter-spacing: 2px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .header .subtitle {
+      color: #aaffaa;
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+    }
+
+    /* Retro search bar */
+    .search-container {
+      margin: 40px auto;
+      max-width: 600px;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background-color: #001200;
+      border: 2px solid #33ff33;
+      color: #33ff33;
+      font-size: 1.2rem;
+      padding: 12px;
+      box-shadow: 0 0 15px rgba(51, 255, 51, 0.3), inset 0 0 10px rgba(0, 0, 0, 0.5);
+      outline: none;
+      text-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
+    }
+
+    .search-input::placeholder {
+      color: rgba(51, 255, 51, 0.5);
+    }
+
+    .search-input:focus {
+      box-shadow: 0 0 20px rgba(51, 255, 51, 0.5), inset 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Speed dial grid */
+    .speed-dial {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .bookmark {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px 10px;
+      background: linear-gradient(to bottom, rgba(0, 24, 0, 0.8), rgba(0, 10, 0, 0.8));
+      border: 1px solid #33ff33;
+      box-shadow: 0 0 10px rgba(51, 255, 51, 0.2), inset 0 0 20px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bookmark:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px rgba(51, 255, 51, 0.4), inset 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Light up effect on hover */
+    .bookmark::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(51, 255, 51, 0.2), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .bookmark:hover::before {
+      opacity: 1;
+    }
+
+    .bookmark-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 60px;
+      height: 60px;
+      background: rgba(0, 10, 0, 0.6);
+      border-radius: 8px;
+      border: 1px solid rgba(51, 255, 51, 0.5);
+    }
+
+    .bookmark-title {
+      font-size: 1rem;
+      color: #33ff33;
+      text-align: center;
+    }
+
+    /* Footer */
+    .footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px;
+      color: rgba(51, 255, 51, 0.5);
+      font-size: 0.8rem;
+      text-align: center;
+      font-family: monospace;
+      z-index: 3;
+    }
+
+    /* Custom styles for retro bookmark themes */
+    .bookmark.factions {
+      background: linear-gradient(to bottom, rgba(24, 0, 24, 0.8), rgba(10, 0, 10, 0.8));
+      border-color: #ff33ff;
+    }
+
+    .bookmark.factions .bookmark-icon {
+      border-color: rgba(255, 51, 255, 0.5);
+    }
+
+    .bookmark.propaganda {
+      background: linear-gradient(to bottom, rgba(24, 24, 0, 0.8), rgba(10, 10, 0, 0.8));
+      border-color: #ffff33;
+    }
+
+    .bookmark.propaganda .bookmark-icon {
+      border-color: rgba(255, 255, 51, 0.5);
+    }
+
+    .bookmark.games {
+      background: linear-gradient(to bottom, rgba(0, 24, 24, 0.8), rgba(0, 10, 10, 0.8));
+      border-color: #33ffff;
+    }
+
+    .bookmark.games .bookmark-icon {
+      border-color: rgba(51, 255, 255, 0.5);
+    }
+
+    .bookmark.news {
+      background: linear-gradient(to bottom, rgba(24, 0, 0, 0.8), rgba(10, 0, 0, 0.8));
+      border-color: #ff3333;
+    }
+
+    .bookmark.news .bookmark-icon {
+      border-color: rgba(255, 51, 51, 0.5);
+    }
+
+    .bookmark.tools {
+      background: linear-gradient(to bottom, rgba(16, 16, 16, 0.8), rgba(8, 8, 8, 0.8));
+      border-color: #cccccc;
+    }
+
+    .bookmark.tools .bookmark-icon {
+      border-color: rgba(204, 204, 204, 0.5);
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div class="logo">CYBERACME OS</div>
+    <div class="subtitle">TERMINAL BROWSER v3.4.0</div>
+  </div>
+
+  <div class="search-container">
+    <label>
+      <input type="text" class="search-input" placeholder="ENTER SEARCH QUERY..." autofocus>
+    </label>
+  </div>
+
+  <div class="speed-dial">
+    <a href="factions/factions.html" class="bookmark factions">
+      <div class="bookmark-icon">📊</div>
+      <div class="bookmark-title">FACTIONS</div>
+    </a>
+    <a href="propaganda/propaganda.html" class="bookmark propaganda">
+      <div class="bookmark-icon">📢</div>
+      <div class="bookmark-title">PROPAGANDA</div>
+    </a>
+    <a href="#" class="bookmark games">
+      <div class="bookmark-icon">🎮</div>
+      <div class="bookmark-title">GAMES</div>
+    </a>
+    <a href="#" class="bookmark news">
+      <div class="bookmark-icon">📰</div>
+      <div class="bookmark-title">NEWS</div>
+    </a>
+    <a href="#" class="bookmark tools">
+      <div class="bookmark-icon">🔧</div>
+      <div class="bookmark-title">TOOLS</div>
+    </a>
+    <a href="#" class="bookmark">
+      <div class="bookmark-icon">📁</div>
+      <div class="bookmark-title">FILES</div>
+    </a>
+    <a href="#" class="bookmark">
+      <div class="bookmark-icon">🔒</div>
+      <div class="bookmark-title">SECURITY</div>
+    </a>
+    <a href="#" class="bookmark">
+      <div class="bookmark-icon">⚡</div>
+      <div class="bookmark-title">NETWORK</div>
+    </a>
+  </div>
+</div>
+
+<div class="footer">
+  CYBERACME TECHNOLOGIES &copy; 2025 | "TOMORROW'S TECH TODAY"
+</div>
+
+<script>
+  // Handle search input
+  document.querySelector('.search-input').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      const searchTerm = this.value.trim();
+      if (searchTerm) {
+        alert('Search functionality is currently offline. Please try again later.');
+      }
+    }
+  });
+
+  // Random glitching effect
+  function glitchEffect() {
+    const container = document.querySelector('.container');
+    const randomTime = Math.floor(Math.random() * 10000) + 5000; // Between 5-15 seconds
+
+    setTimeout(() => {
+      container.style.opacity = '0.8';
+      setTimeout(() => {
+        container.style.opacity = '1';
+      }, 100);
+
+      glitchEffect();
+    }, randomTime);
+  }
+
+  // Start the random glitch effect
+  glitchEffect();
+</script>
+</body>
+</html>
